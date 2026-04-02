@@ -142,7 +142,7 @@ export default function Home({ history, onHistoryChange }: Props) {
     <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
       <section
         data-testid="dashboard-summary"
-        className="rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 p-6 text-white shadow-lg"
+        className="rounded-2xl from-indigo-600 via-indigo-500 to-violet-600 p-6 text-white shadow-lg font-medium bg-[#f6f7f9]"
       >
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
