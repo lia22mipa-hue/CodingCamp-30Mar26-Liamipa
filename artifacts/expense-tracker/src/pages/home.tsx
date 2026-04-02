@@ -29,6 +29,7 @@ const CATEGORIES = [
   { key: "Fun" as CategoryKey, label: "Fun", emoji: "🎉", color: "violet" },
   { key: "Belanja Bulanan" as CategoryKey, label: "Belanja Bulanan", emoji: "🛒", color: "emerald" },
   { key: "Biaya Tak Terduga" as CategoryKey, label: "Biaya Tak Terduga", emoji: "⚡", color: "amber" },
+  { key: "Save Money" as CategoryKey, label: "Save Money", emoji: "💰", color: "teal" },
 ];
 
 const COLOR_MAP: Record<string, { bar: string; badge: string; text: string }> = {
@@ -37,6 +38,7 @@ const COLOR_MAP: Record<string, { bar: string; badge: string; text: string }> = 
   violet: { bar: "bg-violet-500", badge: "bg-violet-50 text-violet-700", text: "text-violet-600" },
   emerald: { bar: "bg-emerald-500", badge: "bg-emerald-50 text-emerald-700", text: "text-emerald-600" },
   amber: { bar: "bg-amber-500", badge: "bg-amber-50 text-amber-700", text: "text-amber-600" },
+  teal: { bar: "bg-teal-500", badge: "bg-teal-50 text-teal-700", text: "text-teal-600" },
 };
 
 const expenseSchema = z.object({
@@ -139,10 +141,12 @@ export default function Home({ history, onHistoryChange }: Props) {
   const now = new Date();
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
+      {/* ── DASHBOARD SUMMARY ── */}
       <section
         data-testid="dashboard-summary"
-        className="rounded-2xl from-indigo-600 via-indigo-500 to-violet-600 p-6 text-white shadow-lg font-medium bg-[#f6f7f9]"
+        className="rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-600 p-6 text-white shadow-lg"
       >
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
@@ -205,133 +209,7 @@ export default function Home({ history, onHistoryChange }: Props) {
         </p>
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        {CATEGORIES.map((cat) => {
-          const actual = getActual(cat.key);
-          const budget = budgets[cat.key] || 0;
-          const remaining = budget - actual;
-          const isOver = budget > 0 && actual > budget;
-          const pct = budget > 0 ? Math.min((actual / budget) * 100, 100) : 0;
-          const colors = COLOR_MAP[cat.color];
-          const catExpenses = expenses.filter((e) => e.category === cat.key);
-          const hasLeak = leakyCategories.has(cat.key);
-          const leakInfo = leaks.find((l) => l.category === cat.key);
-
-          return (
-            <div
-              key={cat.key}
-              data-testid={`category-card-${cat.key}`}
-              className={`bg-white rounded-2xl border shadow-sm p-4 flex flex-col gap-3 ${
-                isOver ? "border-red-200" : "border-slate-200"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">{cat.emoji}</span>
-                  <span className="text-sm font-semibold text-slate-700">{cat.label}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  {hasLeak && leakInfo?.isWidening && (
-                    <span className="text-[9px] bg-orange-100 text-orange-600 font-bold px-1.5 py-0.5 rounded-full">
-                      MELEBAR
-                    </span>
-                  )}
-                  {hasLeak && leakInfo && leakInfo.consecutiveMonths >= 3 && (
-                    <span className="text-[9px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded-full">
-                      LEAK
-                    </span>
-                  )}
-                  {isOver && <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs text-slate-400 mb-1 block">Budget Plan (Rp)</label>
-                <input
-                  data-testid={`input-budget-${cat.key}`}
-                  type="number"
-                  min={0}
-                  placeholder="0"
-                  value={budgetInputs[cat.key]}
-                  onChange={(e) => handleBudgetChange(cat.key, e.target.value)}
-                  className="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex justify-between text-xs text-slate-500">
-                  <span>Terpakai</span>
-                  <span className={isOver ? "text-red-500 font-semibold" : colors.text}>{formatRp(actual)}</span>
-                </div>
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div
-                    data-testid={`progress-bar-${cat.key}`}
-                    className={`h-full rounded-full transition-all duration-500 ${isOver ? "bg-red-500" : colors.bar}`}
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-400">Sisa</span>
-                  <span
-                    data-testid={`remaining-${cat.key}`}
-                    className={`font-semibold ${isOver ? "text-red-500" : "text-emerald-600"}`}
-                  >
-                    {isOver ? `−${formatRp(Math.abs(remaining))}` : formatRp(remaining)}
-                  </span>
-                </div>
-                {isOver && (
-                  <p className="text-xs text-red-500 font-medium text-center mt-1">Over budget!</p>
-                )}
-              </div>
-
-              <div className="border-t border-slate-100 pt-3">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Daftar Pengeluaran</p>
-                  {catExpenses.length > 0 && (
-                    <span className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${colors.badge}`}>
-                      {catExpenses.length}
-                    </span>
-                  )}
-                </div>
-                {catExpenses.length === 0 ? (
-                  <p className="text-xs text-slate-300 text-center py-3 italic">Belum ada pengeluaran</p>
-                ) : (
-                  <div className="space-y-1.5 max-h-40 overflow-y-auto pr-0.5">
-                    {catExpenses.map((exp) => (
-                      <div key={exp.id} data-testid={`cat-row-${exp.id}`} className="flex items-start justify-between gap-1.5 group">
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs text-slate-600 truncate leading-tight">{exp.description}</p>
-                          <p className="text-[10px] text-slate-300">{exp.date}</p>
-                        </div>
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          <span className={`text-xs font-semibold ${isOver ? "text-red-500" : colors.text}`}>
-                            {formatRp(exp.amount)}
-                          </span>
-                          <button
-                            data-testid={`cat-delete-${exp.id}`}
-                            onClick={() => deleteExpense(exp.id)}
-                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-slate-300 hover:text-red-500 transition-all"
-                            aria-label={`Hapus ${exp.description}`}
-                          >
-                            <Trash2 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {catExpenses.length > 0 && (
-                  <div className={`mt-2 pt-2 border-t flex justify-between items-center ${isOver ? "border-red-100" : "border-slate-100"}`}>
-                    <span className="text-xs text-slate-400 font-medium">Total</span>
-                    <span className={`text-sm font-bold ${isOver ? "text-red-500" : colors.text}`}>{formatRp(actual)}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </section>
-
+      {/* ── TAMBAH PENGELUARAN + SEMUA PENGELUARAN ── */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
           <h2 className="text-base font-semibold text-slate-800 mb-4 flex items-center gap-2">
@@ -457,6 +335,135 @@ export default function Home({ history, onHistoryChange }: Props) {
           )}
         </div>
       </div>
+
+      {/* ── CATEGORY CARDS (horizontal scroll, 2 rows x 3 cols on desktop) ── */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {CATEGORIES.map((cat) => {
+          const actual = getActual(cat.key);
+          const budget = budgets[cat.key] || 0;
+          const remaining = budget - actual;
+          const isOver = budget > 0 && actual > budget;
+          const pct = budget > 0 ? Math.min((actual / budget) * 100, 100) : 0;
+          const colors = COLOR_MAP[cat.color];
+          const catExpenses = expenses.filter((e) => e.category === cat.key);
+          const hasLeak = leakyCategories.has(cat.key);
+          const leakInfo = leaks.find((l) => l.category === cat.key);
+
+          return (
+            <div
+              key={cat.key}
+              data-testid={`category-card-${cat.key}`}
+              className={`bg-white rounded-2xl border shadow-sm p-4 flex flex-col gap-3 ${
+                isOver ? "border-red-200" : "border-slate-200"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{cat.emoji}</span>
+                  <span className="text-sm font-semibold text-slate-700">{cat.label}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  {hasLeak && leakInfo?.isWidening && (
+                    <span className="text-[9px] bg-orange-100 text-orange-600 font-bold px-1.5 py-0.5 rounded-full">
+                      MELEBAR
+                    </span>
+                  )}
+                  {hasLeak && leakInfo && leakInfo.consecutiveMonths >= 3 && (
+                    <span className="text-[9px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded-full">
+                      LEAK
+                    </span>
+                  )}
+                  {isOver && <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs text-slate-400 mb-1 block">Budget Plan (Rp)</label>
+                <input
+                  data-testid={`input-budget-${cat.key}`}
+                  type="number"
+                  min={0}
+                  placeholder="0"
+                  value={budgetInputs[cat.key]}
+                  onChange={(e) => handleBudgetChange(cat.key, e.target.value)}
+                  className="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex justify-between text-xs text-slate-500">
+                  <span>Terpakai</span>
+                  <span className={isOver ? "text-red-500 font-semibold" : colors.text}>{formatRp(actual)}</span>
+                </div>
+                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    data-testid={`progress-bar-${cat.key}`}
+                    className={`h-full rounded-full transition-all duration-500 ${isOver ? "bg-red-500" : colors.bar}`}
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span className="text-slate-400">Sisa</span>
+                  <span
+                    data-testid={`remaining-${cat.key}`}
+                    className={`font-semibold ${isOver ? "text-red-500" : "text-emerald-600"}`}
+                  >
+                    {isOver ? `−${formatRp(Math.abs(remaining))}` : formatRp(remaining)}
+                  </span>
+                </div>
+                {isOver && (
+                  <p className="text-xs text-red-500 font-medium text-center mt-1">Over budget!</p>
+                )}
+              </div>
+
+              <div className="border-t border-slate-100 pt-3">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Daftar Pengeluaran</p>
+                  {catExpenses.length > 0 && (
+                    <span className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${colors.badge}`}>
+                      {catExpenses.length}
+                    </span>
+                  )}
+                </div>
+                {catExpenses.length === 0 ? (
+                  <p className="text-xs text-slate-300 text-center py-3 italic">Belum ada pengeluaran</p>
+                ) : (
+                  <div className="space-y-1.5 max-h-40 overflow-y-auto pr-0.5">
+                    {catExpenses.map((exp) => (
+                      <div key={exp.id} data-testid={`cat-row-${exp.id}`} className="flex items-start justify-between gap-1.5 group">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-slate-600 truncate leading-tight">{exp.description}</p>
+                          <p className="text-[10px] text-slate-300">{exp.date}</p>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <span className={`text-xs font-semibold ${isOver ? "text-red-500" : colors.text}`}>
+                            {formatRp(exp.amount)}
+                          </span>
+                          <button
+                            data-testid={`cat-delete-${exp.id}`}
+                            onClick={() => deleteExpense(exp.id)}
+                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-slate-300 hover:text-red-500 transition-all"
+                            aria-label={`Hapus ${exp.description}`}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {catExpenses.length > 0 && (
+                  <div className={`mt-2 pt-2 border-t flex justify-between items-center ${isOver ? "border-red-100" : "border-slate-100"}`}>
+                    <span className="text-xs text-slate-400 font-medium">Total</span>
+                    <span className={`text-sm font-bold ${isOver ? "text-red-500" : colors.text}`}>{formatRp(actual)}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   );
 }

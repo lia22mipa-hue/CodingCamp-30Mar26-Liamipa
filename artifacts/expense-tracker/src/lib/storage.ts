@@ -4,6 +4,7 @@ export const CATEGORY_KEYS = [
   "Fun",
   "Belanja Bulanan",
   "Biaya Tak Terduga",
+  "Save Money",
 ] as const;
 
 export type CategoryKey = (typeof CATEGORY_KEYS)[number];
@@ -42,6 +43,7 @@ export const DEFAULT_BUDGETS: BudgetMap = {
   Fun: 0,
   "Belanja Bulanan": 0,
   "Biaya Tak Terduga": 0,
+  "Save Money": 0,
 };
 
 export const DEFAULT_ACTUALS: ActualMap = {
@@ -50,6 +52,7 @@ export const DEFAULT_ACTUALS: ActualMap = {
   Fun: 0,
   "Belanja Bulanan": 0,
   "Biaya Tak Terduga": 0,
+  "Save Money": 0,
 };
 
 export function load<T>(key: string, fallback: T): T {
@@ -84,7 +87,7 @@ export interface LeakInfo {
 }
 
 export function detectLeaks(history: MonthlySnapshot[]): LeakInfo[] {
-  if (history.length === 0) return [];
+  if (!history || history.length === 0) return [];
 
   const sorted = [...history].sort((a, b) =>
     a.year !== b.year ? a.year - b.year : a.month - b.month
@@ -94,7 +97,9 @@ export function detectLeaks(history: MonthlySnapshot[]): LeakInfo[] {
     let consecutiveMonths = 0;
     for (let i = sorted.length - 1; i >= 0; i--) {
       const snap = sorted[i];
-      if (snap.actuals[cat] > snap.budgets[cat] && snap.budgets[cat] > 0) {
+      const actual = snap.actuals?.[cat] ?? 0;
+      const budget = snap.budgets?.[cat] ?? 0;
+      if (actual > budget && budget > 0) {
         consecutiveMonths++;
       } else {
         break;
@@ -104,8 +109,8 @@ export function detectLeaks(history: MonthlySnapshot[]): LeakInfo[] {
     const last = sorted[sorted.length - 1];
     const prev = sorted.length >= 2 ? sorted[sorted.length - 2] : null;
 
-    const currentGap = last ? last.actuals[cat] - last.budgets[cat] : 0;
-    const previousGap = prev ? prev.actuals[cat] - prev.budgets[cat] : 0;
+    const currentGap = last ? (last.actuals?.[cat] ?? 0) - (last.budgets?.[cat] ?? 0) : 0;
+    const previousGap = prev ? (prev.actuals?.[cat] ?? 0) - (prev.budgets?.[cat] ?? 0) : 0;
     const isWidening = currentGap > 0 && previousGap > 0 && currentGap > previousGap;
 
     return { category: cat, consecutiveMonths, isWidening, currentGap, previousGap };

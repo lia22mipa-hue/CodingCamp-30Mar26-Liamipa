@@ -15,6 +15,7 @@ const CAT_COLORS: Record<CategoryKey, string> = {
   Fun: "#8b5cf6",
   "Belanja Bulanan": "#10b981",
   "Biaya Tak Terduga": "#f59e0b",
+  "Save Money": "#14b8a6",
 };
 
 const CAT_EMOJIS: Record<CategoryKey, string> = {
@@ -23,6 +24,7 @@ const CAT_EMOJIS: Record<CategoryKey, string> = {
   Fun: "🎉",
   "Belanja Bulanan": "🛒",
   "Biaya Tak Terduga": "⚡",
+  "Save Money": "💰",
 };
 
 interface Props {
@@ -243,7 +245,7 @@ export default function Reports({ history }: Props) {
               <Tooltip content={<CustomTooltipRp />} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               {CATEGORY_KEYS.map((cat) => (
-                <Bar key={cat} dataKey={cat} stackId="a" fill={CAT_COLORS[cat]} radius={cat === "Biaya Tak Terduga" ? [4, 4, 0, 0] : [0, 0, 0, 0]} />
+                <Bar key={cat} dataKey={cat} stackId="a" fill={CAT_COLORS[cat]} radius={cat === "Save Money" ? [4, 4, 0, 0] : [0, 0, 0, 0]} />
               ))}
             </BarChart>
           </ResponsiveContainer>
