@@ -32,13 +32,13 @@ const CATEGORIES = [
   { key: "Save Money" as CategoryKey, label: "Save Money", emoji: "💰", color: "teal" },
 ];
 
-const COLOR_MAP: Record<string, { bar: string; badge: string; text: string }> = {
-  indigo: { bar: "bg-indigo-500", badge: "bg-indigo-50 text-indigo-700", text: "text-indigo-600" },
-  sky: { bar: "bg-sky-500", badge: "bg-sky-50 text-sky-700", text: "text-sky-600" },
-  violet: { bar: "bg-violet-500", badge: "bg-violet-50 text-violet-700", text: "text-violet-600" },
-  emerald: { bar: "bg-emerald-500", badge: "bg-emerald-50 text-emerald-700", text: "text-emerald-600" },
-  amber: { bar: "bg-amber-500", badge: "bg-amber-50 text-amber-700", text: "text-amber-600" },
-  teal: { bar: "bg-teal-500", badge: "bg-teal-50 text-teal-700", text: "text-teal-600" },
+const COLOR_MAP: Record<string, { bar: string; badge: string; text: string; card: string; header: string; border: string; input: string }> = {
+  indigo: { bar: "bg-indigo-500", badge: "bg-indigo-100 text-indigo-700", text: "text-indigo-600", card: "bg-gradient-to-br from-indigo-50 to-indigo-100/60", header: "text-indigo-800", border: "border-indigo-200", input: "border-indigo-200 bg-indigo-50/50 focus:ring-indigo-300" },
+  sky:    { bar: "bg-sky-500",    badge: "bg-sky-100 text-sky-700",    text: "text-sky-600",    card: "bg-gradient-to-br from-sky-50 to-sky-100/60",    header: "text-sky-800",    border: "border-sky-200",    input: "border-sky-200 bg-sky-50/50 focus:ring-sky-300" },
+  violet: { bar: "bg-violet-500", badge: "bg-violet-100 text-violet-700", text: "text-violet-600", card: "bg-gradient-to-br from-violet-50 to-violet-100/60", header: "text-violet-800", border: "border-violet-200", input: "border-violet-200 bg-violet-50/50 focus:ring-violet-300" },
+  emerald:{ bar: "bg-emerald-500",badge: "bg-emerald-100 text-emerald-700",text: "text-emerald-600",card: "bg-gradient-to-br from-emerald-50 to-emerald-100/60",header: "text-emerald-800",border: "border-emerald-200",input: "border-emerald-200 bg-emerald-50/50 focus:ring-emerald-300" },
+  amber:  { bar: "bg-amber-500",  badge: "bg-amber-100 text-amber-700",  text: "text-amber-600",  card: "bg-gradient-to-br from-amber-50 to-amber-100/60",  header: "text-amber-800",  border: "border-amber-200",  input: "border-amber-200 bg-amber-50/50 focus:ring-amber-300" },
+  teal:   { bar: "bg-teal-500",   badge: "bg-teal-100 text-teal-700",   text: "text-teal-600",   card: "bg-gradient-to-br from-teal-50 to-teal-100/60",   header: "text-teal-800",   border: "border-teal-200",   input: "border-teal-200 bg-teal-50/50 focus:ring-teal-300" },
 };
 
 const expenseSchema = z.object({
@@ -353,14 +353,14 @@ export default function Home({ history, onHistoryChange }: Props) {
             <div
               key={cat.key}
               data-testid={`category-card-${cat.key}`}
-              className={`bg-white rounded-2xl border shadow-sm p-4 flex flex-col gap-3 ${
-                isOver ? "border-red-200" : "border-slate-200"
+              className={`rounded-2xl border shadow-sm p-4 flex flex-col gap-3 ${
+                isOver ? "border-red-300 bg-red-50" : `${colors.card} ${colors.border}`
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{cat.emoji}</span>
-                  <span className="text-sm font-semibold text-slate-700">{cat.label}</span>
+                  <span className={`text-sm font-semibold ${isOver ? "text-red-700" : colors.header}`}>{cat.label}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   {hasLeak && leakInfo?.isWidening && (
@@ -386,7 +386,7 @@ export default function Home({ history, onHistoryChange }: Props) {
                   placeholder="0"
                   value={budgetInputs[cat.key]}
                   onChange={(e) => handleBudgetChange(cat.key, e.target.value)}
-                  className="w-full text-sm px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition"
+                  className={`w-full text-sm px-3 py-2 rounded-lg border focus:outline-none focus:ring-2 transition ${colors.input}`}
                 />
               </div>
 
