@@ -240,6 +240,7 @@ export default function Home() {
             const isOver = budget > 0 && actual > budget;
             const pct = budget > 0 ? Math.min((actual / budget) * 100, 100) : 0;
             const colors = COLOR_MAP[cat.color];
+            const catExpenses = expenses.filter((e) => e.category === cat.key);
 
             return (
               <div
@@ -297,6 +298,64 @@ export default function Home() {
                     <p className="text-xs text-red-500 font-medium text-center mt-1">
                       Over budget!
                     </p>
+                  )}
+                </div>
+
+                <div className="border-t border-slate-100 pt-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                      Daftar Pengeluaran
+                    </p>
+                    {catExpenses.length > 0 && (
+                      <span className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${colors.badge}`}>
+                        {catExpenses.length}
+                      </span>
+                    )}
+                  </div>
+
+                  {catExpenses.length === 0 ? (
+                    <p className="text-xs text-slate-300 text-center py-3 italic">
+                      Belum ada pengeluaran
+                    </p>
+                  ) : (
+                    <div className="space-y-1.5 max-h-40 overflow-y-auto pr-0.5">
+                      {catExpenses.map((exp) => (
+                        <div
+                          key={exp.id}
+                          data-testid={`cat-row-${exp.id}`}
+                          className="flex items-start justify-between gap-1.5 group"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs text-slate-600 truncate leading-tight">
+                              {exp.description}
+                            </p>
+                            <p className="text-[10px] text-slate-300">{exp.date}</p>
+                          </div>
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <span className={`text-xs font-semibold ${isOver ? "text-red-500" : colors.text}`}>
+                              {formatRp(exp.amount)}
+                            </span>
+                            <button
+                              data-testid={`cat-delete-${exp.id}`}
+                              onClick={() => deleteExpense(exp.id)}
+                              className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-slate-300 hover:text-red-500 transition-all"
+                              aria-label={`Hapus ${exp.description}`}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {catExpenses.length > 0 && (
+                    <div className={`mt-2 pt-2 border-t flex justify-between items-center ${isOver ? "border-red-100" : "border-slate-100"}`}>
+                      <span className="text-xs text-slate-400 font-medium">Total</span>
+                      <span className={`text-sm font-bold ${isOver ? "text-red-500" : colors.text}`}>
+                        {formatRp(actual)}
+                      </span>
+                    </div>
                   )}
                 </div>
               </div>
