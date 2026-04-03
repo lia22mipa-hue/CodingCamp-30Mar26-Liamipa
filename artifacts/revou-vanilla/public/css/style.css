@@ -1,0 +1,77 @@
+/* ════════════════════════════════════
+   Expense & Budget Visualizer – Custom CSS
+   CodingCamp RevoU – Liamipa
+═══════════════════════════════════ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ── Form field error state ── */
+.input-field.is-invalid {
+  border-color: #ef4444 !important;
+  ring-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+}
+
+.err-msg {
+  display: none;
+}
+.err-msg.visible {
+  display: block;
+}
+
+/* ── Budget card over-budget state ── */
+.budget-card.is-over {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2) !important;
+  border-color: #fca5a5 !important;
+}
+.budget-card.is-over .progress-bar {
+  background-color: #ef4444 !important;
+}
+.budget-card.is-over .remain-val {
+  color: #ef4444 !important;
+}
+.budget-card.is-over .actual-val {
+  color: #ef4444 !important;
+}
+
+/* ── Transaction item delete button ── */
+.tx-delete {
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.tx-item:hover .tx-delete {
+  opacity: 1;
+}
+
+/* ── Transition for all interactive elements ── */
+button, input, select {
+  transition: all 0.15s ease;
+}
+
+/* ── Category badge colors ── */
+.badge-food       { background: #eef2ff; color: #4338ca; }
+.badge-transport  { background: #e0f2fe; color: #0369a1; }
+.badge-fun        { background: #f5f3ff; color: #6d28d9; }
+.badge-savemoney  { background: #f0fdfa; color: #0f766e; }
