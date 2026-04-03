@@ -1,43 +1,51 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense & Budget Visualizer - L</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Expense & Budget Visualizer - L</title>
+        <link rel="stylesheet" href="index.css" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Expense Visualizer</h1>
 
-    <div class="container">
-        <h1>Expense Visualizer</h1>
-        
-        <div class="balance-container">
-            <h2>Total Saldo: <span id="total-balance">Rp 0</span></h2>
+            <div class="balance-container">
+                <h2>Total Saldo: <span id="total-balance">Rp 0</span></h2>
+            </div>
+
+            <form id="expense-form">
+                <input
+                    type="text"
+                    id="item-name"
+                    placeholder="Nama Barang"
+                    required
+                />
+                <input
+                    type="number"
+                    id="amount"
+                    placeholder="Jumlah (Rp)"
+                    required
+                />
+                <select id="category" required>
+                    <option value="">Pilih Kategori</option>
+                    <option value="Food">Food</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Fun">Fun</option>
+                </select>
+                <button type="submit">Tambah Transaksi</button>
+            </form>
+
+            <div class="chart-container">
+                <p>Visualisasi Pengeluaran (Pie Chart)</p>
+                <canvas id="expenseChart"></canvas>
+            </div>
+
+            <h3>Daftar Transaksi</h3>
+            <ul id="transaction-list"></ul>
         </div>
 
-        <form id="expense-form">
-            <input type="text" id="item-name" placeholder="Nama Barang" required>
-            <input type="number" id="amount" placeholder="Jumlah (Rp)" required>
-            <select id="category" required>
-                <option value="">Pilih Kategori</option>
-                <option value="Food">Food</option>
-                <option value="Transport">Transport</option>
-                <option value="Fun">Fun</option>
-            </select>
-            <button type="submit">Tambah Transaksi</button>
-        </form>
-
-        <div class="chart-container">
-            <p>Visualisasi Pengeluaran (Pie Chart)</p>
-            <canvas id="expenseChart"></canvas>
-        </div>
-
-        <h3>Daftar Transaksi</h3>
-        <ul id="transaction-list">
-            </ul>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/script.js"></script>
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="index.js"></script>
+    </body>
 </html>
