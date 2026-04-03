@@ -2,32 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import {
-  PlusCircle,
-  Trash2,
-  Wallet,
-  AlertTriangle,
-  TrendingUp,
-  Archive,
-  CheckCircle2,
-} from "lucide-react";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { PlusCircle, Trash2, Wallet, AlertTriangle, TrendingUp, Archive, CheckCircle2 } from "lucide-react";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   CATEGORY_KEYS,
   CategoryKey,
@@ -46,99 +25,20 @@ import {
 
 const CATEGORIES = [
   { key: "Food" as CategoryKey, label: "Food", emoji: "🍜", color: "indigo" },
-  {
-    key: "Transport" as CategoryKey,
-    label: "Transport",
-    emoji: "🚗",
-    color: "sky",
-  },
+  { key: "Transport" as CategoryKey, label: "Transport", emoji: "🚗", color: "sky" },
   { key: "Fun" as CategoryKey, label: "Fun", emoji: "🎉", color: "violet" },
-  {
-    key: "Belanja Bulanan" as CategoryKey,
-    label: "Belanja Bulanan",
-    emoji: "🛒",
-    color: "emerald",
-  },
-  {
-    key: "Biaya Tak Terduga" as CategoryKey,
-    label: "Biaya Tak Terduga",
-    emoji: "⚡",
-    color: "amber",
-  },
-  {
-    key: "Save Money" as CategoryKey,
-    label: "Save Money",
-    emoji: "💰",
-    color: "teal",
-  },
+  { key: "Belanja Bulanan" as CategoryKey, label: "Belanja Bulanan", emoji: "🛒", color: "emerald" },
+  { key: "Biaya Tak Terduga" as CategoryKey, label: "Biaya Tak Terduga", emoji: "⚡", color: "amber" },
+  { key: "Save Money" as CategoryKey, label: "Save Money", emoji: "💰", color: "teal" },
 ];
 
-const COLOR_MAP: Record<
-  string,
-  {
-    bar: string;
-    badge: string;
-    text: string;
-    card: string;
-    header: string;
-    border: string;
-    input: string;
-  }
-> = {
-  indigo: {
-    bar: "bg-indigo-500",
-    badge: "bg-indigo-100 text-indigo-700",
-    text: "text-indigo-600",
-    card: "bg-gradient-to-br from-indigo-50 to-indigo-100/60",
-    header: "text-indigo-800",
-    border: "border-indigo-200",
-    input: "border-indigo-200 bg-indigo-50/50 focus:ring-indigo-300",
-  },
-  sky: {
-    bar: "bg-sky-500",
-    badge: "bg-sky-100 text-sky-700",
-    text: "text-sky-600",
-    card: "bg-gradient-to-br from-sky-50 to-sky-100/60",
-    header: "text-sky-800",
-    border: "border-sky-200",
-    input: "border-sky-200 bg-sky-50/50 focus:ring-sky-300",
-  },
-  violet: {
-    bar: "bg-violet-500",
-    badge: "bg-violet-100 text-violet-700",
-    text: "text-violet-600",
-    card: "bg-gradient-to-br from-violet-50 to-violet-100/60",
-    header: "text-violet-800",
-    border: "border-violet-200",
-    input: "border-violet-200 bg-violet-50/50 focus:ring-violet-300",
-  },
-  emerald: {
-    bar: "bg-emerald-500",
-    badge: "bg-emerald-100 text-emerald-700",
-    text: "text-emerald-600",
-    card: "bg-gradient-to-br from-emerald-50 to-emerald-100/60",
-    header: "text-emerald-800",
-    border: "border-emerald-200",
-    input: "border-emerald-200 bg-emerald-50/50 focus:ring-emerald-300",
-  },
-  amber: {
-    bar: "bg-amber-500",
-    badge: "bg-amber-100 text-amber-700",
-    text: "text-amber-600",
-    card: "bg-gradient-to-br from-amber-50 to-amber-100/60",
-    header: "text-amber-800",
-    border: "border-amber-200",
-    input: "border-amber-200 bg-amber-50/50 focus:ring-amber-300",
-  },
-  teal: {
-    bar: "bg-teal-500",
-    badge: "bg-teal-100 text-teal-700",
-    text: "text-teal-600",
-    card: "bg-gradient-to-br from-teal-50 to-teal-100/60",
-    header: "text-teal-800",
-    border: "border-teal-200",
-    input: "border-teal-200 bg-teal-50/50 focus:ring-teal-300",
-  },
+const COLOR_MAP: Record<string, { bar: string; badge: string; text: string; card: string; header: string; border: string; input: string }> = {
+  indigo: { bar: "bg-indigo-500", badge: "bg-indigo-100 text-indigo-700", text: "text-indigo-600", card: "bg-gradient-to-br from-indigo-50 to-indigo-100/60", header: "text-indigo-800", border: "border-indigo-200", input: "border-indigo-200 bg-indigo-50/50 focus:ring-indigo-300" },
+  sky:    { bar: "bg-sky-500",    badge: "bg-sky-100 text-sky-700",    text: "text-sky-600",    card: "bg-gradient-to-br from-sky-50 to-sky-100/60",    header: "text-sky-800",    border: "border-sky-200",    input: "border-sky-200 bg-sky-50/50 focus:ring-sky-300" },
+  violet: { bar: "bg-violet-500", badge: "bg-violet-100 text-violet-700", text: "text-violet-600", card: "bg-gradient-to-br from-violet-50 to-violet-100/60", header: "text-violet-800", border: "border-violet-200", input: "border-violet-200 bg-violet-50/50 focus:ring-violet-300" },
+  emerald:{ bar: "bg-emerald-500",badge: "bg-emerald-100 text-emerald-700",text: "text-emerald-600",card: "bg-gradient-to-br from-emerald-50 to-emerald-100/60",header: "text-emerald-800",border: "border-emerald-200",input: "border-emerald-200 bg-emerald-50/50 focus:ring-emerald-300" },
+  amber:  { bar: "bg-amber-500",  badge: "bg-amber-100 text-amber-700",  text: "text-amber-600",  card: "bg-gradient-to-br from-amber-50 to-amber-100/60",  header: "text-amber-800",  border: "border-amber-200",  input: "border-amber-200 bg-amber-50/50 focus:ring-amber-300" },
+  teal:   { bar: "bg-teal-500",   badge: "bg-teal-100 text-teal-700",   text: "text-teal-600",   card: "bg-gradient-to-br from-teal-50 to-teal-100/60",   header: "text-teal-800",   border: "border-teal-200",   input: "border-teal-200 bg-teal-50/50 focus:ring-teal-300" },
 };
 
 const expenseSchema = z.object({
@@ -154,29 +54,18 @@ interface Props {
 }
 
 export default function Home({ history, onHistoryChange }: Props) {
-  const [expenses, setExpenses] = useState<Expense[]>(() =>
-    load<Expense[]>(STORAGE_EXPENSES, []),
-  );
-  const [budgets, setBudgets] = useState<BudgetMap>(() =>
-    load<BudgetMap>(STORAGE_BUDGETS, { ...DEFAULT_BUDGETS }),
-  );
-  const [budgetInputs, setBudgetInputs] = useState<Record<CategoryKey, string>>(
-    () => {
-      const stored = load<BudgetMap>(STORAGE_BUDGETS, { ...DEFAULT_BUDGETS });
-      const result = {} as Record<CategoryKey, string>;
-      for (const cat of CATEGORIES)
-        result[cat.key] = stored[cat.key] > 0 ? String(stored[cat.key]) : "";
-      return result;
-    },
-  );
+  const [expenses, setExpenses] = useState<Expense[]>(() => load<Expense[]>(STORAGE_EXPENSES, []));
+  const [budgets, setBudgets] = useState<BudgetMap>(() => load<BudgetMap>(STORAGE_BUDGETS, { ...DEFAULT_BUDGETS }));
+  const [budgetInputs, setBudgetInputs] = useState<Record<CategoryKey, string>>(() => {
+    const stored = load<BudgetMap>(STORAGE_BUDGETS, { ...DEFAULT_BUDGETS });
+    const result = {} as Record<CategoryKey, string>;
+    for (const cat of CATEGORIES) result[cat.key] = stored[cat.key] > 0 ? String(stored[cat.key]) : "";
+    return result;
+  });
   const [archiveSuccess, setArchiveSuccess] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem(STORAGE_EXPENSES, JSON.stringify(expenses));
-  }, [expenses]);
-  useEffect(() => {
-    localStorage.setItem(STORAGE_BUDGETS, JSON.stringify(budgets));
-  }, [budgets]);
+  useEffect(() => { localStorage.setItem(STORAGE_EXPENSES, JSON.stringify(expenses)); }, [expenses]);
+  useEffect(() => { localStorage.setItem(STORAGE_BUDGETS, JSON.stringify(budgets)); }, [budgets]);
 
   const form = useForm<ExpenseForm>({
     resolver: zodResolver(expenseSchema),
@@ -189,11 +78,7 @@ export default function Home({ history, onHistoryChange }: Props) {
       category: values.category as CategoryKey,
       amount: values.amount,
       description: values.description,
-      date: new Date().toLocaleDateString("id-ID", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
+      date: new Date().toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" }),
     };
     setExpenses((prev) => [newExp, ...prev]);
     form.reset({ category: "", amount: undefined, description: "" });
@@ -206,24 +91,16 @@ export default function Home({ history, onHistoryChange }: Props) {
   function handleBudgetChange(catKey: CategoryKey, raw: string) {
     setBudgetInputs((prev) => ({ ...prev, [catKey]: raw }));
     const parsed = parseFloat(raw);
-    setBudgets((prev) => ({
-      ...prev,
-      [catKey]: isNaN(parsed) || parsed < 0 ? 0 : parsed,
-    }));
+    setBudgets((prev) => ({ ...prev, [catKey]: isNaN(parsed) || parsed < 0 ? 0 : parsed }));
   }
 
   function handleArchive() {
     const now = new Date();
     const actuals = {} as Record<CategoryKey, number>;
     for (const cat of CATEGORY_KEYS) {
-      actuals[cat] = expenses
-        .filter((e) => e.category === cat)
-        .reduce((s, e) => s + e.amount, 0);
+      actuals[cat] = expenses.filter((e) => e.category === cat).reduce((s, e) => s + e.amount, 0);
     }
-    const totalBudget = CATEGORY_KEYS.reduce(
-      (s, k) => s + (budgets[k] || 0),
-      0,
-    );
+    const totalBudget = CATEGORY_KEYS.reduce((s, k) => s + (budgets[k] || 0), 0);
     const totalActual = CATEGORY_KEYS.reduce((s, k) => s + actuals[k], 0);
 
     const snap: MonthlySnapshot = {
@@ -242,32 +119,20 @@ export default function Home({ history, onHistoryChange }: Props) {
 
     setExpenses([]);
     setBudgets({ ...DEFAULT_BUDGETS });
-    setBudgetInputs(
-      Object.fromEntries(CATEGORY_KEYS.map((k) => [k, ""])) as Record<
-        CategoryKey,
-        string
-      >,
-    );
+    setBudgetInputs(Object.fromEntries(CATEGORY_KEYS.map((k) => [k, ""])) as Record<CategoryKey, string>);
     setArchiveSuccess(true);
     setTimeout(() => setArchiveSuccess(false), 3000);
   }
 
   const getActual = useCallback(
-    (catKey: CategoryKey) =>
-      expenses
-        .filter((e) => e.category === catKey)
-        .reduce((s, e) => s + e.amount, 0),
-    [expenses],
+    (catKey: CategoryKey) => expenses.filter((e) => e.category === catKey).reduce((s, e) => s + e.amount, 0),
+    [expenses]
   );
 
-  const totalBudgeted = CATEGORY_KEYS.reduce(
-    (s, k) => s + (budgets[k] || 0),
-    0,
-  );
+  const totalBudgeted = CATEGORY_KEYS.reduce((s, k) => s + (budgets[k] || 0), 0);
   const totalSpent = expenses.reduce((s, e) => s + e.amount, 0);
   const totalRemaining = totalBudgeted - totalSpent;
-  const overallPct =
-    totalBudgeted > 0 ? Math.min((totalSpent / totalBudgeted) * 100, 100) : 0;
+  const overallPct = totalBudgeted > 0 ? Math.min((totalSpent / totalBudgeted) * 100, 100) : 0;
   const isOverall = totalSpent > totalBudgeted && totalBudgeted > 0;
 
   const leaks = detectLeaks(history);
@@ -277,6 +142,7 @@ export default function Home({ history, onHistoryChange }: Props) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+
       {/* ── DASHBOARD SUMMARY ── */}
       <section
         data-testid="dashboard-summary"
@@ -284,12 +150,8 @@ export default function Home({ history, onHistoryChange }: Props) {
       >
         <div className="flex items-start justify-between gap-4 mb-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest opacity-70">
-              Dashboard Summary
-            </p>
-            <p className="text-sm opacity-60 mt-0.5">
-              {MONTH_NAMES[now.getMonth()]} {now.getFullYear()}
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-widest opacity-70">Dashboard Summary</p>
+            <p className="text-sm opacity-60 mt-0.5">{MONTH_NAMES[now.getMonth()]} {now.getFullYear()}</p>
           </div>
           <button
             data-testid="button-archive"
@@ -301,35 +163,24 @@ export default function Home({ history, onHistoryChange }: Props) {
             }`}
           >
             {archiveSuccess ? (
-              <>
-                <CheckCircle2 className="w-3.5 h-3.5" /> Tersimpan!
-              </>
+              <><CheckCircle2 className="w-3.5 h-3.5" /> Tersimpan!</>
             ) : (
-              <>
-                <Archive className="w-3.5 h-3.5" /> Arsip Bulan Ini
-              </>
+              <><Archive className="w-3.5 h-3.5" /> Arsip Bulan Ini</>
             )}
           </button>
         </div>
         <div className="grid grid-cols-3 gap-4 mb-5">
           <div>
             <p className="text-xs opacity-70 mb-0.5">Total Budget</p>
-            <p data-testid="total-budgeted" className="text-xl font-bold">
-              {formatRp(totalBudgeted)}
-            </p>
+            <p data-testid="total-budgeted" className="text-xl font-bold">{formatRp(totalBudgeted)}</p>
           </div>
           <div>
             <p className="text-xs opacity-70 mb-0.5">Total Spent</p>
-            <p data-testid="total-spent" className="text-xl font-bold">
-              {formatRp(totalSpent)}
-            </p>
+            <p data-testid="total-spent" className="text-xl font-bold">{formatRp(totalSpent)}</p>
           </div>
           <div>
             <p className="text-xs opacity-70 mb-0.5">Sisa</p>
-            <p
-              data-testid="total-remaining"
-              className={`text-xl font-bold ${isOverall ? "text-red-300" : "text-emerald-300"}`}
-            >
+            <p data-testid="total-remaining" className={`text-xl font-bold ${isOverall ? "text-red-300" : "text-emerald-300"}`}>
               {formatRp(totalRemaining)}
             </p>
           </div>
@@ -354,8 +205,7 @@ export default function Home({ history, onHistoryChange }: Props) {
           </div>
         )}
         <p className="mt-4 text-xs opacity-50">
-          Tekan "Arsip Bulan Ini" di akhir bulan untuk menyimpan data ke riwayat
-          dan mereset bulan baru.
+          Tekan "Arsip Bulan Ini" di akhir bulan untuk menyimpan data ke riwayat dan mereset bulan baru.
         </p>
       </section>
 
@@ -375,12 +225,7 @@ export default function Home({ history, onHistoryChange }: Props) {
                   <FormItem>
                     <FormLabel className="text-slate-600">Deskripsi</FormLabel>
                     <FormControl>
-                      <Input
-                        data-testid="input-description"
-                        placeholder="Contoh: Nasi goreng, Bensin..."
-                        className="bg-slate-900"
-                        {...field}
-                      />
+                      <Input data-testid="input-description" placeholder="Contoh: Nasi goreng, Bensin..." className="bg-slate-50" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -391,21 +236,17 @@ export default function Home({ history, onHistoryChange }: Props) {
                 name="amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-slate-600">
-                      Jumlah (Rp)
-                    </FormLabel>
+                    <FormLabel className="text-slate-600">Jumlah (Rp)</FormLabel>
                     <FormControl>
                       <Input
                         data-testid="input-amount"
                         type="number"
                         min={1}
                         placeholder="Contoh: 25000"
-                        className="bg-slate-900"
+                        className="bg-slate-50"
                         {...field}
                         value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(e.target.valueAsNumber || undefined)
-                        }
+                        onChange={(e) => field.onChange(e.target.valueAsNumber || undefined)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -420,18 +261,13 @@ export default function Home({ history, onHistoryChange }: Props) {
                     <FormLabel className="text-slate-600">Kategori</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger
-                          data-testid="select-category"
-                          className="bg-slate-900"
-                        >
+                        <SelectTrigger data-testid="select-category" className="bg-slate-50">
                           <SelectValue placeholder="Pilih kategori..." />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         {CATEGORIES.map((c) => (
-                          <SelectItem key={c.key} value={c.key}>
-                            {c.emoji} {c.label}
-                          </SelectItem>
+                          <SelectItem key={c.key} value={c.key}>{c.emoji} {c.label}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -439,11 +275,7 @@ export default function Home({ history, onHistoryChange }: Props) {
                   </FormItem>
                 )}
               />
-              <Button
-                data-testid="button-submit"
-                type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white"
-              >
+              <Button data-testid="button-submit" type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">
                 Tambah Pengeluaran
               </Button>
             </form>
@@ -467,12 +299,8 @@ export default function Home({ history, onHistoryChange }: Props) {
               <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-3">
                 <Wallet className="w-6 h-6 text-slate-400" />
               </div>
-              <p className="text-sm font-medium text-slate-500">
-                Belum ada transaksi
-              </p>
-              <p className="text-xs text-slate-400 mt-1">
-                Tambahkan pengeluaran menggunakan form di samping.
-              </p>
+              <p className="text-sm font-medium text-slate-500">Belum ada transaksi</p>
+              <p className="text-xs text-slate-400 mt-1">Tambahkan pengeluaran menggunakan form di samping.</p>
             </div>
           ) : (
             <div className="divide-y divide-slate-50 max-h-96 overflow-y-auto">
@@ -480,33 +308,17 @@ export default function Home({ history, onHistoryChange }: Props) {
                 const cat = CATEGORIES.find((c) => c.key === exp.category);
                 const colors = cat ? COLOR_MAP[cat.color] : COLOR_MAP.indigo;
                 return (
-                  <div
-                    key={exp.id}
-                    data-testid={`row-expense-${exp.id}`}
-                    className="flex items-center gap-3 px-6 py-3.5 hover:bg-slate-900 transition-colors"
-                  >
-                    <span className="text-xl w-8 text-center">
-                      {cat?.emoji}
-                    </span>
+                  <div key={exp.id} data-testid={`row-expense-${exp.id}`} className="flex items-center gap-3 px-6 py-3.5 hover:bg-slate-50 transition-colors">
+                    <span className="text-xl w-8 text-center">{cat?.emoji}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-700 truncate">
-                        {exp.description}
-                      </p>
+                      <p className="text-sm font-medium text-slate-700 truncate">{exp.description}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span
-                          className={`text-xs px-2 py-0.5 rounded-full font-medium ${colors.badge}`}
-                        >
-                          {exp.category}
-                        </span>
-                        <span className="text-xs text-slate-400">
-                          {exp.date}
-                        </span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${colors.badge}`}>{exp.category}</span>
+                        <span className="text-xs text-slate-400">{exp.date}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      <span className="text-sm font-semibold text-slate-700">
-                        {formatRp(exp.amount)}
-                      </span>
+                      <span className="text-sm font-semibold text-slate-700">{formatRp(exp.amount)}</span>
                       <button
                         data-testid={`button-delete-${exp.id}`}
                         onClick={() => deleteExpense(exp.id)}
@@ -542,19 +354,13 @@ export default function Home({ history, onHistoryChange }: Props) {
               key={cat.key}
               data-testid={`category-card-${cat.key}`}
               className={`rounded-2xl border shadow-sm p-4 flex flex-col gap-3 ${
-                isOver
-                  ? "border-red-300 bg-red-50"
-                  : `${colors.card} ${colors.border}`
+                isOver ? "border-red-300 bg-red-50" : `${colors.card} ${colors.border}`
               }`}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{cat.emoji}</span>
-                  <span
-                    className={`text-sm font-semibold ${isOver ? "text-red-700" : colors.header}`}
-                  >
-                    {cat.label}
-                  </span>
+                  <span className={`text-sm font-semibold ${isOver ? "text-red-700" : colors.header}`}>{cat.label}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   {hasLeak && leakInfo?.isWidening && (
@@ -567,16 +373,12 @@ export default function Home({ history, onHistoryChange }: Props) {
                       LEAK
                     </span>
                   )}
-                  {isOver && (
-                    <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />
-                  )}
+                  {isOver && <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0" />}
                 </div>
               </div>
 
               <div>
-                <label className="text-xs text-slate-400 mb-1 block">
-                  Budget Plan (Rp)
-                </label>
+                <label className="text-xs text-slate-400 mb-1 block">Budget Plan (Rp)</label>
                 <input
                   data-testid={`input-budget-${cat.key}`}
                   type="number"
@@ -591,13 +393,7 @@ export default function Home({ history, onHistoryChange }: Props) {
               <div className="space-y-1">
                 <div className="flex justify-between text-xs text-slate-500">
                   <span>Terpakai</span>
-                  <span
-                    className={
-                      isOver ? "text-red-500 font-semibold" : colors.text
-                    }
-                  >
-                    {formatRp(actual)}
-                  </span>
+                  <span className={isOver ? "text-red-500 font-semibold" : colors.text}>{formatRp(actual)}</span>
                 </div>
                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div
@@ -612,61 +408,41 @@ export default function Home({ history, onHistoryChange }: Props) {
                     data-testid={`remaining-${cat.key}`}
                     className={`font-semibold ${isOver ? "text-red-500" : "text-emerald-600"}`}
                   >
-                    {isOver
-                      ? `−${formatRp(Math.abs(remaining))}`
-                      : formatRp(remaining)}
+                    {isOver ? `−${formatRp(Math.abs(remaining))}` : formatRp(remaining)}
                   </span>
                 </div>
                 {isOver && (
-                  <p className="text-xs text-red-500 font-medium text-center mt-1">
-                    Over budget!
-                  </p>
+                  <p className="text-xs text-red-500 font-medium text-center mt-1">Over budget!</p>
                 )}
               </div>
 
               <div className="border-t border-slate-100 pt-3">
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                    Daftar Pengeluaran
-                  </p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">Daftar Pengeluaran</p>
                   {catExpenses.length > 0 && (
-                    <span
-                      className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${colors.badge}`}
-                    >
+                    <span className={`text-xs font-bold px-1.5 py-0.5 rounded-md ${colors.badge}`}>
                       {catExpenses.length}
                     </span>
                   )}
                 </div>
                 {catExpenses.length === 0 ? (
-                  <p className="text-xs text-slate-300 text-center py-3 italic">
-                    Belum ada pengeluaran
-                  </p>
+                  <p className="text-xs text-slate-300 text-center py-3 italic">Belum ada pengeluaran</p>
                 ) : (
                   <div className="space-y-1.5 max-h-40 overflow-y-auto pr-0.5">
                     {catExpenses.map((exp) => (
-                      <div
-                        key={exp.id}
-                        data-testid={`cat-row-${exp.id}`}
-                        className="flex items-start justify-between gap-1.5 group"
-                      >
+                      <div key={exp.id} data-testid={`cat-row-${exp.id}`} className="flex items-start justify-between gap-1.5 group">
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs text-slate-600 truncate leading-tight">
-                            {exp.description}
-                          </p>
-                          <p className="text-[10px] text-slate-300">
-                            {exp.date}
-                          </p>
+                          <p className="text-xs text-slate-600 truncate leading-tight">{exp.description}</p>
+                          <p className="text-[10px] text-slate-300">{exp.date}</p>
                         </div>
                         <div className="flex items-center gap-1 flex-shrink-0">
-                          <span
-                            className={`text-xs font-semibold ${isOver ? "text-red-500" : colors.text}`}
-                          >
+                          <span className={`text-xs font-semibold ${isOver ? "text-red-500" : colors.text}`}>
                             {formatRp(exp.amount)}
                           </span>
                           <button
                             data-testid={`cat-delete-${exp.id}`}
                             onClick={() => deleteExpense(exp.id)}
-                            className="opacity-100 p-0.5 rounded text-slate-900 transition-all"
+                            className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-slate-300 hover:text-red-500 transition-all"
                             aria-label={`Hapus ${exp.description}`}
                           >
                             <Trash2 className="w-3 h-3" />
@@ -677,17 +453,9 @@ export default function Home({ history, onHistoryChange }: Props) {
                   </div>
                 )}
                 {catExpenses.length > 0 && (
-                  <div
-                    className={`mt-2 pt-2 border-t flex justify-between items-center ${isOver ? "border-red-100" : "border-slate-100"}`}
-                  >
-                    <span className="text-xs text-slate-400 font-medium">
-                      Total
-                    </span>
-                    <span
-                      className={`text-sm font-bold ${isOver ? "text-red-500" : colors.text}`}
-                    >
-                      {formatRp(actual)}
-                    </span>
+                  <div className={`mt-2 pt-2 border-t flex justify-between items-center ${isOver ? "border-red-100" : "border-slate-100"}`}>
+                    <span className="text-xs text-slate-400 font-medium">Total</span>
+                    <span className={`text-sm font-bold ${isOver ? "text-red-500" : colors.text}`}>{formatRp(actual)}</span>
                   </div>
                 )}
               </div>
@@ -695,6 +463,7 @@ export default function Home({ history, onHistoryChange }: Props) {
           );
         })}
       </div>
+
     </div>
   );
 }
